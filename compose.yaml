@@ -1,3 +1,5 @@
+name: stable-diffusion
+
 services:
   comfyui:
     command: ${COMFYUI_ARGS:-}
