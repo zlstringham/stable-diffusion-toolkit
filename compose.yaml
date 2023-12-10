@@ -1,1 +1,51 @@
 services:
+  comfyui:
+    command: ${COMFYUI_ARGS:-}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+    image: zlstringham/comfyui
+    ports:
+      - "8188:8188"
+    stop_signal: SIGINT
+    volumes:
+      - ./services/comfyui/custom_nodes:/app/ComfyUI/custom_nodes
+      - ./services/comfyui/input:/app/ComfyUI/input
+      - ./services/comfyui/models:/app/ComfyUI/models
+      - ./services/comfyui/output:/app/ComfyUI/output
+      - ./services/comfyui/venv:/app/ComfyUI/venv
+      - ./services/comfyui/web/extensions:/app/ComfyUI/web/extensions
+      - ./services/comfyui/extra_model_paths.yaml:/app/ComfyUI/extra_model_paths.yaml
+      - ${CUSTOM_FILES_PATH:-./data/custom}:/app/custom
+      - ${EMBEDDINGS_PATH:-./data/embeddings}:/app/stable-diffusion-webui/embeddings
+      - ${MODELS_PATH:-./data/models}:/app/stable-diffusion-webui/models
+
+  webui:
+    command: ${WEBUI_ARGS:-}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+    environment:
+      - ACCELERATE=${ACCELERATE:-}
+      - NO_TCMALLOC=${NO_TCMALLOC:-}
+    image: zlstringham/stable-diffusion-webui
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./services/webui/config-states:/app/stable-diffusion-webui/config-states
+      - ./services/webui/extensions:/app/stable-diffusion-webui/extensions
+      - ./services/webui/interrogate:/app/stable-diffusion-webui/interrogate
+      - ./services/webui/log:/app/stable-diffusion-webui/log
+      - ./services/webui/node_modules:/app/stable-diffusion-webui/node_modules
+      - ./services/webui/outputs:/app/stable-diffusion-webui/outputs
+      - ./services/webui/repositories:/app/stable-diffusion-webui/repositories
+      - ./services/webui/venv:/app/stable-diffusion-webui/venv
+      - ${CUSTOM_FILES_PATH:-./data/custom}:/app/custom
+      - ${EMBEDDINGS_PATH:-./data/embeddings}:/app/stable-diffusion-webui/embeddings
+      - ${MODELS_PATH:-./data/models}:/app/stable-diffusion-webui/models

@@ -16,3 +16,7 @@
 !/data/models/VAE/.gitkeep
 !/data/models/VAE-approx
 !/data/models/VAE-approx/model.pt
+
+/services/**/*
+!/services/comfyui
+!/services/comfyui/extra_model_paths.yaml
